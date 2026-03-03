@@ -2,6 +2,9 @@ package com.hospital_medical_record_system.entity;
 
 import java.util.List;
 
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.CascadeType;
@@ -23,7 +26,8 @@ public class Doctor {
 	private String doctorName;
 	private String specialization;
 
-	private String availableDays;
+	@JdbcTypeCode(SqlTypes.ARRAY)
+	private List<String> availableDays;
 
 	@ManyToOne
 	@JoinColumn(name = "department_id")
@@ -70,11 +74,11 @@ public class Doctor {
 		this.specialization = specialization;
 	}
 
-	public String getAvailableDays() {
+	public List<String> getAvailableDays() {
 		return availableDays;
 	}
 
-	public void setAvailableDays(String availableDays) {
+	public void setAvailableDays(List<String> availableDays) {
 		this.availableDays = availableDays;
 	}
 

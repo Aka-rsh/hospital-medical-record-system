@@ -17,7 +17,7 @@ public class Patient {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long patientId; // fixed typo from "pateintId"
+	private Long patientId; 
 
 	private String patientName;
 	private Integer age;

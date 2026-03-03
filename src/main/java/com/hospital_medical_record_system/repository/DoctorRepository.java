@@ -14,10 +14,11 @@ import com.hospital_medical_record_system.entity.Patient;
 public interface DoctorRepository extends JpaRepository<Doctor, Long> {
 
 	// Fetch doctor by specialization
-	Doctor findBySpecialization(String specialization);
+	List<Doctor> findBySpecialization(String specialization);
 
 	// Fetch doctor by available days
-	Doctor findByAvailableDays(String availableDays);
+	@Query(value = "SELECT * FROM doctor WHERE :day = ANY(available_days)", nativeQuery = true)
+	List<Doctor> findByAvailableDay(@Param("day") String day);
 
 	// Fetch doctors in a department
 	@Query("SELECT d FROM Doctor d WHERE d.department = :department")

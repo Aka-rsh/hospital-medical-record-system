@@ -21,7 +21,7 @@ import com.hospital_medical_record_system.entity.Patient;
 import com.hospital_medical_record_system.service.DoctorService;
 
 @RestController
-@RequestMapping("/department/api/doctor")
+@RequestMapping("/doctor")
 public class DoctorController {
 
 	@Autowired
@@ -46,15 +46,19 @@ public class DoctorController {
 	}
 
 	@GetMapping("/specialization/{specialization}")
-	public ResponseEntity<ResponseStructureDto<Doctor>> getDoctorBySpecialization(@PathVariable String specialization) {
-		return doctorService.getDoctorBySpecialization(specialization);
+	public ResponseEntity<ResponseStructureDto<List<Doctor>>> getDoctorBySpecialization(@PathVariable String specialization) {
+	    return doctorService.getDoctorBySpecialization(specialization);
 	}
 
 	// Fetch doctors by department
-	@PostMapping("/department")
+	@GetMapping("/department/{deptId}")
 	public ResponseEntity<ResponseStructureDto<List<Doctor>>> getDoctorsInDepartment(
-			@RequestBody Department department) {
-		return doctorService.getDoctorsInDepartment(department);
+	        @PathVariable("deptId") Long deptId) { 
+	    
+	    Department department = new Department();
+	    department.setDepartmentId(deptId);
+	    
+	    return doctorService.getDoctorsInDepartment(department);
 	}
 
 	// Fetch doctors by patient
@@ -71,7 +75,7 @@ public class DoctorController {
 
 	// Fetch doctor by available days
 	@GetMapping("/available-days/{days}")
-	public ResponseEntity<ResponseStructureDto<Doctor>> getDoctorByAvailableDays(
+	public ResponseEntity<ResponseStructureDto<List<Doctor>>> getDoctorByAvailableDays(
 			@PathVariable("days") String availableDays) {
 		return doctorService.getDoctorByAvailableDays(availableDays);
 	}

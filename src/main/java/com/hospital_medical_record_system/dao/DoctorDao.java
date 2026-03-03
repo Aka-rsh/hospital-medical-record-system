@@ -25,7 +25,7 @@ public class DoctorDao {
 	}
 
 	// fetching all records
-	public List<Doctor> getAllDoctors(List<Doctor> doctor) {
+	public List<Doctor> getAllDoctors() {
 		return doctorRepository.findAll();
 	}
 
@@ -40,8 +40,8 @@ public class DoctorDao {
 	}
 
 	// Fetch doctor by specialization
-	public Doctor getDoctorBySpecialization(String specialization) {
-		return doctorRepository.findBySpecialization(specialization);
+	public List<Doctor> getDoctorBySpecialization(String specialization) {
+	    return doctorRepository.findBySpecialization(specialization);
 	}
 
 	// Fetch doctors in a department
@@ -60,8 +60,8 @@ public class DoctorDao {
 	}
 
 	// Fetch doctor by available days
-	public Doctor getDoctorByAvailableDays(String availableDays) {
-		return doctorRepository.findByAvailableDays(availableDays);
+	public List<Doctor> getDoctorByAvailableDays(String availableDays) {
+		return doctorRepository.findByAvailableDay(availableDays);
 	}
 
 	// update doctor info
@@ -72,7 +72,7 @@ public class DoctorDao {
 
 		Optional<Doctor> opt = doctorRepository.findById(doctor.getDoctorId());
 		if (!opt.isEmpty()) {
-			return opt.get();
+		    return doctorRepository.save(doctor); 
 		} else {
 			throw new IdNotFoundException("ID is Not Present in the db");
 		}

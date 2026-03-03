@@ -38,7 +38,6 @@ public class MedicalRecordsService {
 			throw new MedicalRecordException("Cannot save record: No completed appointment found.");
 		}
 
-		// --- IMPROVEMENTS START HERE ---
 		// 1. Set the actual data from the found appointment to the record
 		record.setPatient(appointmentOpt.get().getPatient());
 		record.setDoctor(appointmentOpt.get().getDoctor());

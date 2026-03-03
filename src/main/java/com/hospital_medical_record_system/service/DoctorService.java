@@ -34,7 +34,7 @@ public class DoctorService {
 
 	// Fetch all doctors
 	public ResponseEntity<ResponseStructureDto<List<Doctor>>> getAllDoctors() {
-		List<Doctor> doctors = doctorDao.getAllDoctors(null);
+		List<Doctor> doctors = doctorDao.getAllDoctors();
 
 		ResponseStructureDto<List<Doctor>> response = new ResponseStructureDto<>();
 		response.setStatusCode(HttpStatus.OK.value());
@@ -57,12 +57,15 @@ public class DoctorService {
 	}
 
 	// Fetch doctor by specialization
-	public ResponseEntity<ResponseStructureDto<Doctor>> getDoctorBySpecialization(String specialization) {
-		ResponseStructureDto<Doctor> response = new ResponseStructureDto<>();
-		response.setStatusCode(HttpStatus.OK.value());
-		response.setMessage("Doctor fetched by specialization");
-		response.setData(doctorDao.getDoctorBySpecialization(specialization));
-		return new ResponseEntity<>(response, HttpStatus.OK);
+	public ResponseEntity<ResponseStructureDto<List<Doctor>>> getDoctorBySpecialization(String specialization) {
+	    List<Doctor> doctors = doctorDao.getDoctorBySpecialization(specialization);
+	    
+	    ResponseStructureDto<List<Doctor>> response = new ResponseStructureDto<>();
+	    response.setStatusCode(HttpStatus.OK.value());
+	    response.setMessage("Doctors fetched by specialization");
+	    response.setData(doctors);
+	    
+	    return new ResponseEntity<>(response, HttpStatus.OK);
 	}
 
 	// Fetch doctors by department
@@ -93,8 +96,8 @@ public class DoctorService {
 	}
 
 	// Fetch doctor by available days
-	public ResponseEntity<ResponseStructureDto<Doctor>> getDoctorByAvailableDays(String availableDays) {
-		ResponseStructureDto<Doctor> response = new ResponseStructureDto<>();
+	public ResponseEntity<ResponseStructureDto<List<Doctor>>> getDoctorByAvailableDays(String availableDays) {
+		ResponseStructureDto<List<Doctor>> response = new ResponseStructureDto<>();
 		response.setStatusCode(HttpStatus.OK.value());
 		response.setMessage("Doctor fetched by available days");
 		response.setData(doctorDao.getDoctorByAvailableDays(availableDays));
