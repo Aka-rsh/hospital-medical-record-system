@@ -34,6 +34,8 @@ public class PrescriptionService {
 		if (record.getPrescription() != null) {
 			throw new MedicalRecordException("This Medical Record already has an assigned prescription.");
 		}
+		
+		
 
 		// 2. Save the Prescription first to generate its ID
 		Prescription savedPrescription = prescriptionDao.addPrescription(prescription);
@@ -41,7 +43,7 @@ public class PrescriptionService {
 		// 3. CRUCIAL STEP: Link the prescription to the record and update the record
 		// Since MedicalRecords owns the foreign key, we must save the record to update
 		// the DB column
-		record.setPrescription(savedPrescription);
+		record.setPrescription(savedPrescription); 
 		medicalRecordsDao.createRecord(record); // This updates the record in DB with the new prescription_id
 
 		ResponseStructureDto<Prescription> response = new ResponseStructureDto<>();
@@ -52,28 +54,35 @@ public class PrescriptionService {
 		return new ResponseEntity<>(response, HttpStatus.CREATED);
 	}
 
-	// Get all prescriptions
+	//  Get all prescriptions (with Else Part)
 	public ResponseEntity<ResponseStructureDto<List<Prescription>>> getAllPrescriptions() {
-		List<Prescription> list = prescriptionDao.getAllPrescriptions();
+	    List<Prescription> list = prescriptionDao.getAllPrescriptions();
+	    ResponseStructureDto<List<Prescription>> response = new ResponseStructureDto<>();
 
-		ResponseStructureDto<List<Prescription>> response = new ResponseStructureDto<>();
-		response.setStatusCode(HttpStatus.OK.value());
-		response.setMessage("All prescriptions fetched successfully");
-		response.setData(list);
-
-		return new ResponseEntity<ResponseStructureDto<List<Prescription>>>(response, HttpStatus.OK);
+	    if (!list.isEmpty()) {
+	        response.setStatusCode(HttpStatus.OK.value());
+	        response.setMessage("All prescriptions fetched successfully");
+	        response.setData(list);
+	        return new ResponseEntity<>(response, HttpStatus.OK);
+	    } else {
+	        response.setStatusCode(HttpStatus.NOT_FOUND.value());
+	        response.setMessage("No prescriptions found in the database.");
+	        response.setData(null);
+	        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+	    }
 	}
 
-	// Get prescription by ID
+	// Fetch Prescription by ID (Aapne DAO mein exception handle kiya hai, 
+	// par Service mein standard response dena achha hota hai)
 	public ResponseEntity<ResponseStructureDto<Prescription>> getPrescriptionById(Long id) {
-		Prescription prescription = prescriptionDao.fetchPrescriptionById(id);
-
-		ResponseStructureDto<Prescription> response = new ResponseStructureDto<>();
-		response.setStatusCode(HttpStatus.OK.value());
-		response.setMessage("Prescription fetched successfully");
-		response.setData(prescription);
-
-		return new ResponseEntity<ResponseStructureDto<Prescription>>(response, HttpStatus.OK);
+	    Prescription prescription = prescriptionDao.fetchPrescriptionById(id);
+	    ResponseStructureDto<Prescription> response = new ResponseStructureDto<>();
+	    
+	    // DAO exception throw karega agar null hua, isliye yahan direct success logic
+	    response.setStatusCode(HttpStatus.OK.value());
+	    response.setMessage("Prescription fetched successfully");
+	    response.setData(prescription);
+	    return new ResponseEntity<>(response, HttpStatus.OK);
 	}
 
 	// Update prescription
@@ -90,13 +99,21 @@ public class PrescriptionService {
 
 	// Delete prescription
 	public ResponseEntity<ResponseStructureDto<Long>> deletePrescription(Long id) {
-		Long deletedId = prescriptionDao.deletePrescription(id);
+	    Prescription prescription = prescriptionDao.fetchPrescriptionById(id);
 
-		ResponseStructureDto<Long> response = new ResponseStructureDto<>();
-		response.setStatusCode(HttpStatus.OK.value());
-		response.setMessage("Prescription deleted successfully");
-		response.setData(deletedId);
+	    if (prescription.getMedicalRecords() != null) {
+	        MedicalRecords record = prescription.getMedicalRecords();
+	        record.setPrescription(null); // Link null kiya
+	        medicalRecordsDao.createRecord(record); // Medical Record ko update kiya
+	    }
 
-		return new ResponseEntity<ResponseStructureDto<Long>>(response, HttpStatus.OK);
+	    Long deletedId = prescriptionDao.deletePrescription(id);
+
+	    ResponseStructureDto<Long> response = new ResponseStructureDto<>();
+	    response.setStatusCode(HttpStatus.OK.value());
+	    response.setMessage("Prescription deleted and link removed from Medical Record");
+	    response.setData(deletedId);
+
+	    return new ResponseEntity<>(response, HttpStatus.OK);
 	}
 }

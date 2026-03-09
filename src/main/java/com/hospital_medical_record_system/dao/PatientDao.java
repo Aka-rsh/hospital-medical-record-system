@@ -6,8 +6,6 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import com.hospital_medical_record_system.entity.Appointment;
-import com.hospital_medical_record_system.entity.MedicalRecords;
 import com.hospital_medical_record_system.entity.Patient;
 import com.hospital_medical_record_system.exception.IdNotFoundException;
 import com.hospital_medical_record_system.repository.PatientRepository;
@@ -49,19 +47,19 @@ public class PatientDao {
 	}
 
 	// Fetch patient by appointment
-	public Patient fetchPatientByAppointment(Appointment appointment) {
-		return patientRepository.findPatientByAppointment(appointment);
+	public Patient fetchPatientByAppointment(Long appointmentId) {
+		return patientRepository.findPatientByAppointmentId(appointmentId);
 	}
 
 	// Fetch patient by medical record
-	public Patient fetchPatientByMedicalRecord(MedicalRecords medicalRecord) {
-		return patientRepository.findPatientByMedicalRecord(medicalRecord);
+	public Patient fetchPatientByMedicalRecord(Long medicalRecordId) {
+		return patientRepository.findPatientByMedicalRecordId(medicalRecordId);
 	}
 
 	// Update patient info
 	public Patient updatePatientInfo(Patient patient) {
 		if (patient.getPatientId() == null) {
-			return null;
+		    throw new IdNotFoundException("Patient ID is required for update.");
 		}
 		Optional<Patient> opt = patientRepository.findById(patient.getPatientId());
 		if (opt.isPresent()) {

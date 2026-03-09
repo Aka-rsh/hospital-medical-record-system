@@ -14,10 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.hospital_medical_record_system.dto.ResponseStructureDto;
-import com.hospital_medical_record_system.entity.Appointment;
-import com.hospital_medical_record_system.entity.Doctor;
 import com.hospital_medical_record_system.entity.MedicalRecords;
-import com.hospital_medical_record_system.entity.Patient;
 import com.hospital_medical_record_system.service.MedicalRecordsService;
 
 @RestController
@@ -46,30 +43,31 @@ public class MedicalRecordsController {
 	}
 
 	// Fetch records by patient
-	@PostMapping("/by-patient")
+	@GetMapping("/patient/{patientId}")
 	public ResponseEntity<ResponseStructureDto<List<MedicalRecords>>> fetchRecordByPatient(
-			@RequestBody Patient patient) {
-		return medicalRecordsService.fetchRecordByPatient(patient);
+	        @PathVariable Long patientId) {
+	    return medicalRecordsService.fetchRecordByPatient(patientId);
 	}
 
-	// Fetch records by doctor
-	@PostMapping("/by-doctor")
-	public ResponseEntity<ResponseStructureDto<List<MedicalRecords>>> fetchRecordByDoctor(@RequestBody Doctor doctor) {
-		return medicalRecordsService.fetchRecordByDoctor(doctor);
+	@GetMapping("/doctor/{doctorId}")
+	public ResponseEntity<ResponseStructureDto<List<MedicalRecords>>> fetchRecordByDoctor(
+	        @PathVariable Long doctorId) {
+	    return medicalRecordsService.fetchRecordByDoctor(doctorId); 
 	}
 
 	// Fetch records by appointment
-	@PostMapping("/by-appointment")
+	@GetMapping("/by-appointment/{appointmentId}")
 	public ResponseEntity<ResponseStructureDto<List<MedicalRecords>>> fetchRecordByAppointment(
-			@RequestBody Appointment appointment) {
-		return medicalRecordsService.fetchRecordByAppointment(appointment);
+	        @PathVariable Long appointmentId) { // PathVariable asaan hai
+	    return medicalRecordsService.fetchRecordByAppointment(appointmentId);
 	}
 
 	// Fetch records by visit date
 	@GetMapping("/by-visit-date")
 	public ResponseEntity<ResponseStructureDto<List<MedicalRecords>>> fetchRecordByVisitDate(
-			@RequestParam String visitDate) {
-		LocalDateTime dt = LocalDateTime.parse(visitDate);
-		return medicalRecordsService.fetchRecordByVisitDate(dt);
+	        @RequestParam String visitDate) {
+	    String formattedDate = visitDate.trim().replace(" ", "T");
+	    LocalDateTime dt = LocalDateTime.parse(formattedDate);
+	    return medicalRecordsService.fetchRecordByVisitDate(dt);
 	}
 }

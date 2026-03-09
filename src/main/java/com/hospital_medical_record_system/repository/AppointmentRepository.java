@@ -23,17 +23,32 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
 	List<Appointment> findByStatus(AppointmentStatus status);
 
 	List<Appointment> findByDoctorAndStatus(Doctor doctor, String status);
+	
+	@Query("SELECT a FROM Appointment a WHERE a.appointmentDateTime BETWEEN :start AND :end")
+	List<Appointment> findAllByDateRange(@Param("start") LocalDateTime start, @Param("end") LocalDateTime end);
 
 	// One Patient cannot have two Appointments
 	@Query("SELECT a FROM Appointment a WHERE a.patient.patientId = :pId "
-			+ "AND a.appointmentDateTime >= :startOfDay AND a.appointmentDateTime <= :endOfDay") // Changed to
-																									// appointmentDateTime
-	Optional<Appointment> findAppointmentByPatientAndDate(@Param("pId") Long patientId,
+		    + "AND a.appointmentDateTime >= :startOfDay "
+		    + "AND a.appointmentDateTime <= :endOfDay "
+		    + "AND a.status != com.hospital_medical_record_system.entity.Appointment.AppointmentStatus.CANCELLED")
+		Optional<Appointment> findActiveAppointmentByPatientAndDate(@Param("pId") Long patientId,
 			@Param("startOfDay") LocalDateTime start, @Param("endOfDay") LocalDateTime end);
 
 	// Medical record must be save only after appointment completion
-	@Query("SELECT a FROM Appointment a WHERE a.patient.patientId = :pId "
-			+ "AND a.doctor.doctorId = :dId AND a.status = com.hospital_medical_record_system.entity.Appointment.AppointmentStatus.COMPLETED")
-	Optional<Appointment> findCompletedAppointment(@Param("pId") Long patientId, @Param("dId") Long doctorId);
+	@Query("SELECT a FROM Appointment a WHERE a.patient.patientId = :pId " +
+	       "AND a.doctor.doctorId = :dId " +
+	       "AND a.status = :status")
+	Optional<Appointment> findCompletedAppointments(
+	    @Param("pId") Long pId, 
+	    @Param("dId") Long dId, 
+	    @Param("status") Appointment.AppointmentStatus status
+	);
+
+	@Query("SELECT a FROM Appointment a WHERE a.doctor = :doctor AND a.appointmentDateTime = :dateTime AND a.status != 'CANCELLED'")
+    Optional<Appointment> findByDoctorAndAppointmentDateTime(
+        @Param("doctor") Doctor doctor, 
+        @Param("dateTime") LocalDateTime dateTime
+    );
 
 }

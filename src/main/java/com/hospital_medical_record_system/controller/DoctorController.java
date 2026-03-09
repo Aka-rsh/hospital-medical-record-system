@@ -14,10 +14,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.hospital_medical_record_system.dto.ResponseStructureDto;
-import com.hospital_medical_record_system.entity.Appointment;
 import com.hospital_medical_record_system.entity.Department;
 import com.hospital_medical_record_system.entity.Doctor;
-import com.hospital_medical_record_system.entity.Patient;
 import com.hospital_medical_record_system.service.DoctorService;
 
 @RestController
@@ -62,22 +60,22 @@ public class DoctorController {
 	}
 
 	// Fetch doctors by patient
-	@PostMapping("/patient")
-	public ResponseEntity<ResponseStructureDto<List<Doctor>>> getDoctorsByPatient(@RequestBody Patient patient) {
-		return doctorService.getDoctorsByPatient(patient);
+	@GetMapping("/patient/{patientId}")
+	public ResponseEntity<ResponseStructureDto<List<Doctor>>> getDoctorsByPatient(@PathVariable Long patientId) {
+	    return doctorService.getDoctorsByPatient(patientId);
 	}
 
 	// Fetch doctor by appointment
-	@PostMapping("/appointment")
-	public ResponseEntity<ResponseStructureDto<Doctor>> getDoctorByAppointment(@RequestBody Appointment appointment) {
-		return doctorService.getDoctorByAppointment(appointment);
+	@GetMapping("/appointment/{appointmentId}")
+	public ResponseEntity<ResponseStructureDto<Doctor>> getDoctorByAppointment(@PathVariable Long appointmentId) {
+	    return doctorService.getDoctorByAppointment(appointmentId);
 	}
 
 	// Fetch doctor by available days
 	@GetMapping("/available-days/{days}")
 	public ResponseEntity<ResponseStructureDto<List<Doctor>>> getDoctorByAvailableDays(
-			@PathVariable("days") String availableDays) {
-		return doctorService.getDoctorByAvailableDays(availableDays);
+	        @PathVariable("days") List<String> availableDays) {
+	    return doctorService.getDoctorByAvailableDays(availableDays);
 	}
 
 	// Update doctor

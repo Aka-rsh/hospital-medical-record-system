@@ -45,18 +45,22 @@ public class AppointmentController {
 	}
 
 	// Fetch appointments by date
-	@GetMapping("/by-date")
+	@GetMapping("/by-date/{dateTime}")
 	public ResponseEntity<ResponseStructureDto<List<Appointment>>> fetchAppointmentByDate(
-			@RequestParam String dateTime) {
-		LocalDateTime dt = LocalDateTime.parse(dateTime);
-		return appointmentService.fetchAppointmentByDate(dt);
+	        @PathVariable String dateTime) {
+	    
+	    // trim() extra space hatayega aur bina space ke T jodega
+	    LocalDateTime dt = LocalDateTime.parse(dateTime.trim() + "T00:00:00"); 
+	    return appointmentService.fetchAppointmentByDate(dt);
 	}
 
 	// Fetch appointments by doctor
-	@GetMapping("/by-doctor")
+	@GetMapping("/by-doctor/{doctorId}")
 	public ResponseEntity<ResponseStructureDto<List<Appointment>>> fetchAppointmentByDoctor(
-			@RequestBody Doctor doctor) {
-		return appointmentService.fetchAppointmentByDoctor(doctor);
+	        @PathVariable Long doctorId) {
+	    Doctor doctor = new Doctor();
+	    doctor.setDoctorId(doctorId);
+	    return appointmentService.fetchAppointmentByDoctor(doctor);
 	}
 
 	// Fetch appointments by status

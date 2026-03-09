@@ -6,10 +6,8 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import com.hospital_medical_record_system.entity.Appointment;
 import com.hospital_medical_record_system.entity.Department;
 import com.hospital_medical_record_system.entity.Doctor;
-import com.hospital_medical_record_system.entity.Patient;
 import com.hospital_medical_record_system.exception.IdNotFoundException;
 import com.hospital_medical_record_system.repository.DoctorRepository;
 
@@ -50,18 +48,18 @@ public class DoctorDao {
 	}
 
 	// Fetch doctors by patient (via appointment)
-	public List<Doctor> getDoctorsByPatient(Patient patient) {
-		return doctorRepository.fetchDoctorByPatient(patient);
+	public List<Doctor> getDoctorsByPatient(Long patientId) {
+		return doctorRepository.fetchDoctorByPatientId(patientId);
 	}
 
 	// Fetch doctor by appointment
-	public Doctor getDoctorByAppointment(Appointment appointment) {
-		return doctorRepository.fetchDoctorByAppointment(appointment);
+	public Doctor getDoctorByAppointment(Long appointmentId) {
+		return doctorRepository.fetchDoctorByAppointment(appointmentId);
 	}
 
 	// Fetch doctor by available days
-	public List<Doctor> getDoctorByAvailableDays(String availableDays) {
-		return doctorRepository.findByAvailableDay(availableDays);
+	public List<Doctor> getDoctorByAvailableDays(List<String> availableDays) {
+		return doctorRepository.findByAvailableDays(availableDays);
 	}
 
 	// update doctor info

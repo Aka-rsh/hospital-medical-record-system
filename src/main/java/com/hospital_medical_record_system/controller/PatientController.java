@@ -14,8 +14,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.hospital_medical_record_system.dto.ResponseStructureDto;
-import com.hospital_medical_record_system.entity.Appointment;
-import com.hospital_medical_record_system.entity.MedicalRecords;
 import com.hospital_medical_record_system.entity.Patient;
 import com.hospital_medical_record_system.service.PatientService;
 
@@ -56,18 +54,20 @@ public class PatientController {
 		return patientService.fetchPatientWithMaxAge();
 	}
 
+	// PatientController.java mein ye do methods update karein
+
 	// Fetch patient by appointment
-	@GetMapping("/appointment")
+	@GetMapping("/appointment/{appointmentId}")
 	public ResponseEntity<ResponseStructureDto<Patient>> fetchPatientByAppointment(
-			@RequestBody Appointment appointment) {
-		return patientService.fetchPatientByAppointment(appointment);
+	        @PathVariable Long appointmentId) { // PathVariable use karein
+	    return patientService.fetchPatientByAppointment(appointmentId);
 	}
 
 	// Fetch patient by medical record
-	@GetMapping("/medical-record")
+	@GetMapping("/medical-record/{medicalRecordId}")
 	public ResponseEntity<ResponseStructureDto<Patient>> fetchPatientByMedicalRecord(
-			@RequestBody MedicalRecords medicalRecord) {
-		return patientService.fetchPatientByMedicalRecord(medicalRecord);
+	        @PathVariable Long medicalRecordId) { // PathVariable use karein
+	    return patientService.fetchPatientByMedicalRecord(medicalRecordId);
 	}
 
 	// Update patient info
