@@ -37,13 +37,12 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
 
 	// Medical record must be save only after appointment completion
 	@Query("SELECT a FROM Appointment a WHERE a.patient.patientId = :pId " +
-	       "AND a.doctor.doctorId = :dId " +
-	       "AND a.status = :status")
-	Optional<Appointment> findCompletedAppointments(
-	    @Param("pId") Long pId, 
-	    @Param("dId") Long dId, 
-	    @Param("status") Appointment.AppointmentStatus status
-	);
+		       "AND a.doctor.doctorId = :dId " +
+		       "AND a.status = 'COMPLETED'") 
+		Optional<Appointment> findCompletedAppointments(
+		    @Param("pId") Long pId, 
+		    @Param("dId") Long dId
+		);
 
 	@Query("SELECT a FROM Appointment a WHERE a.doctor = :doctor AND a.appointmentDateTime = :dateTime AND a.status != 'CANCELLED'")
     Optional<Appointment> findByDoctorAndAppointmentDateTime(

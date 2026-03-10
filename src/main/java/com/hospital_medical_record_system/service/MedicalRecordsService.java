@@ -34,8 +34,7 @@ public class MedicalRecordsService {
 	    // 2. Logic Trigger: Check if a COMPLETED appointment exists for this pair
 	    Optional<Appointment> appointmentOpt = appointmentRepository.findCompletedAppointments(
 	            patientId, 
-	            doctorId, 
-	            Appointment.AppointmentStatus.COMPLETED
+	            doctorId
 	        );
 
 
